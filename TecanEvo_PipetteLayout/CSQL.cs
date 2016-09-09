@@ -216,8 +216,9 @@ namespace TecanEvo_PipetteLayout
             myConnection.Open();
 
             SqlDataReader myReader = null;
-            SqlCommand myCommand = new SqlCommand("SELECT bar_code, patient_id, s.sample_id, categ_name_id, row, col" +
+            SqlCommand myCommand = new SqlCommand("SELECT bar_code, patient_id, s.sample_id, sc.categ_name_id, row, col" +
                                                 " FROM sample s" +
+                                                " JOIN sample_category sc ON sc.category_id = s.category_id" +
                                                 " JOIN sample_box_sample sbs ON s.sample_id = sbs.sample_id" +
                                                 " WHERE sbs.sample_box_id = (" +
                                                 "   SELECT sample_box_id" +
