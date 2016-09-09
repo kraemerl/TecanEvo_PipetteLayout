@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartArguments>initialize C:\Lars\Git\C#_projects\TecanEvo_PipetteLayout\Data\variables.csv</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartArguments>scan_report C:\Lars\Git\C#_projects\TecanEvo_PipetteLayout\Data\variables.csv C:\Lars\Git\C#_projects\TecanEvo_PipetteLayout\Data\source_eppi_barcode.csv C:\Lars\Git\C#_projects\TecanEvo_PipetteLayout\Data\- C:\Lars\Git\C#_projects\TecanEvo_PipetteLayout\Data\4001088725.csv C:\Lars\Git\C#_projects\TecanEvo_PipetteLayout\Data\lastJobInfo.txt C:\Lars\Git\C#_projects\TecanEvo_PipetteLayout\Data\worklist.gwl</StartArguments>
+  </PropertyGroup>
+</Project>
