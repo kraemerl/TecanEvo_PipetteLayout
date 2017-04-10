@@ -21,7 +21,7 @@ namespace TecanEvo_PipetteLayout
             lst = "(" + lst.Substring(1) + ")";
 
             SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=muba.i-kmb.de;" +
+                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
                                        "Initial Catalog=ibdbase;");
             myConnection.Open();
 
@@ -62,7 +62,7 @@ namespace TecanEvo_PipetteLayout
             lst = "(" + lst.Substring(1) + ")";
 
             SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=muba.i-kmb.de;" +
+                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
                                        "Initial Catalog=ibdbase;");
             myConnection.Open();
 
@@ -123,7 +123,7 @@ namespace TecanEvo_PipetteLayout
             }
 
             SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=muba.i-kmb.de;" +
+                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
                                        "Initial Catalog=ibdbase;");
             myConnection.Open();
 
@@ -157,7 +157,7 @@ namespace TecanEvo_PipetteLayout
         public static bool checkBoxExist(string box_barcode)
         {
             SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=muba.i-kmb.de;" +
+                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
                                        "Initial Catalog=ibdbase;");
             myConnection.Open();
 
@@ -184,7 +184,7 @@ namespace TecanEvo_PipetteLayout
         public static bool checkBoxIsEmpty(string box_barcode)
         {
             SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=muba.i-kmb.de;" +
+                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
                                        "Initial Catalog=ibdbase;");
             myConnection.Open();
 
@@ -211,7 +211,7 @@ namespace TecanEvo_PipetteLayout
         public static void getBoxSamples(string source, string box_barcode, Dictionary<string, CSample> tubeBarcodes)
         {
             SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=muba.i-kmb.de;" +
+                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
                                        "Initial Catalog=ibdbase;");
             myConnection.Open();
 
@@ -241,7 +241,7 @@ namespace TecanEvo_PipetteLayout
         public static void loadLayout(string layout, Dictionary<string, CPlateWell> plateWells)
         {
             SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=muba.i-kmb.de;" +
+                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
                                        "Initial Catalog=ibdbase;");
             myConnection.Open();
 
@@ -271,7 +271,7 @@ namespace TecanEvo_PipetteLayout
         public static void addSamplesToPlate(string platform, string layout, Int32 number, Int32 volume, Int32 concentration, Dictionary<string, CPlateWell> plateWells)
         {
             SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=muba.i-kmb.de;" +
+                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
                                        "Initial Catalog=ibdbase;");
 
             myConnection.Open();
