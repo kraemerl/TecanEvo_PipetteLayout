@@ -78,8 +78,7 @@ namespace TecanEvo_PipetteLayout
                                                 "		from sample_prop_dec " +
                                                 "        where property_id = 2 " +
                                                 "		and property_value != -1 " +
-                                                "		and created_by in ('xpose','tecan') " +
-                                                "                and sample_id in " + lst + " " +
+                                                "       and sample_id in " + lst + " " +
                                                 "		group by sample_id " +
                                                 "	) dd on dd.sample_id = s.sample_id and property_id = 2 and dd.date_entered = s.date_entered " +
                                                 ") sv " +
@@ -91,8 +90,7 @@ namespace TecanEvo_PipetteLayout
                                                 "		from sample_prop_dec " +
                                                 "        where property_id = 1 " +
                                                 "		and property_value != -1 " +
-                                                "		and created_by in ('xpose','tecan') " +
-                                                "                and sample_id in " + lst + " " +
+                                                "       and sample_id in " + lst + " " +
                                                 "		group by sample_id " +
                                                 "	) dd on dd.sample_id = s.sample_id and property_id = 1 and dd.date_entered = s.date_entered " +
                                                 ") sc on sc.sample_id = sv.sample_id"

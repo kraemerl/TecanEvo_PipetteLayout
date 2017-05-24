@@ -199,9 +199,9 @@ namespace TecanEvo_PipetteLayout
                 return;
             }
 
-            if (m_targetVol <= 0)
+            if (m_targetVol < 3)
             {
-                MessageBox.Show("Please enter a volume > 0");
+                MessageBox.Show("Please enter a volume >= 3");
                 txtVolume.Focus();
                 return;
             }

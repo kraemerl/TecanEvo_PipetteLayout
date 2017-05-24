@@ -325,7 +325,7 @@ namespace TecanEvo_PipetteLayout
                 row.Cells[7].Value = key;
                 row.Cells[8].Value = destinationWellDict[key].getPatient();
                 row.Cells[9].Value = destinationWellDict[key].getSampleVol();
-                if (destinationWellDict[key].getSampleVol() < 4)
+                if (destinationWellDict[key].getSampleVol() < 3)
                 {
                     row.Cells[9].Style.BackColor = Color.Red;
                     all_okay = false;
