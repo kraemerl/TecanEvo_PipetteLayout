@@ -51,6 +51,7 @@
             this.rbDestinationDeepWellPlate = new System.Windows.Forms.RadioButton();
             this.label1 = new System.Windows.Forms.Label();
             this.rbDestinationPCRPlate = new System.Windows.Forms.RadioButton();
+            this.label2 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -321,6 +322,15 @@
             this.rbDestinationPCRPlate.UseVisualStyleBackColor = true;
             this.rbDestinationPCRPlate.CheckedChanged += new System.EventHandler(this.rbDestinationPCRPlate_CheckedChanged);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(18, 225);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(96, 13);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "Target Volume (µl):";
+            // 
             // InitializeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -333,6 +343,7 @@
             this.Controls.Add(this.txtConcentration);
             this.Controls.Add(this.lblConcentration);
             this.Controls.Add(this.txtVolume);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.groupBox1);
             this.MaximizeBox = false;
@@ -374,6 +385,7 @@
         private System.Windows.Forms.CheckBox chkSourcePlate3;
         private System.Windows.Forms.TextBox txtSourcePlate2BoxBarcode;
         private System.Windows.Forms.CheckBox chkSourcePlate2;
+        private System.Windows.Forms.Label label2;
     }
 }
 

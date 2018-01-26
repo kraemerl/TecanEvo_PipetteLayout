@@ -11,6 +11,8 @@ namespace TecanEvo_PipetteLayout
 {
     class CSQL
     {
+        private static string conn_string = "User Id=tecan;Password=tecan;Data Source=ukshikmb-sw049;Initial Catalog=ibdbase;";
+
         public static void setPatients(Dictionary<string, CSample> tubeBarcodes)
         {
             string lst = "";
@@ -20,9 +22,7 @@ namespace TecanEvo_PipetteLayout
             }
             lst = "(" + lst.Substring(1) + ")";
 
-            SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
-                                       "Initial Catalog=ibdbase;");
+            SqlConnection myConnection = new SqlConnection(conn_string);
             myConnection.Open();
 
             SqlDataReader myReader = null;
@@ -61,9 +61,7 @@ namespace TecanEvo_PipetteLayout
             }
             lst = "(" + lst.Substring(1) + ")";
 
-            SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
-                                       "Initial Catalog=ibdbase;");
+            SqlConnection myConnection = new SqlConnection(conn_string);
             myConnection.Open();
 
             SqlDataReader myReader = null;
@@ -113,33 +111,18 @@ namespace TecanEvo_PipetteLayout
 
         public static bool checkPlateExist(string plate_barcode)
         {
-            String[] tokenized = plate_barcode.Split('-');
-            if (tokenized.Length != 3)
-            {
-                MessageBox.Show("Error, unknown barcode type!");
-                return false;
-            }
-
-            SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
-                                       "Initial Catalog=ibdbase;");
+            SqlConnection myConnection = new SqlConnection(conn_string);
             myConnection.Open();
 
             SqlCommand myCommand = new SqlCommand("select count(*) as num" +
                                                     " from plate_tracking_location" +
                                                     " where plate_id = (" +
-	                                                "    select p.plate_id" +
-	                                                "    from plate p" +
-                                                    "    join master_plate mp on p.master_plate_name_id = mp.master_plate_name_id" +
-                                                    "    where mp.plate_type_name_id = '96DNA'" +
-                                                    "    and p.master_plate_name_id = '" + tokenized[1] + "'" +
-                                                    "    and p.number = " + int.Parse(tokenized[2]) +
-	                                                "    and p.plate_platform_id = (" +
-		                                            "        select plate_platform_id" +
-		                                            "        from plate_platform" +
-		                                            "        where plate_platform_name_id = '" + tokenized[0] + "'" +
-	                                                "    )" +
-                                                    ")"
+                                                    "   select plate_id" + 
+                                                    "   from plate p" +
+                                                    "   join plate_layout pl on p.plate_layout_id = pl.plate_layout_id" +
+                                                    "   where barcode = '" + plate_barcode + "'" +
+                                                    "   and pl.plate_type_id = 4" +
+                                                    " )"
                                                 , myConnection);
 
             if (int.Parse(myCommand.ExecuteScalar().ToString()) == 1)
@@ -154,9 +137,7 @@ namespace TecanEvo_PipetteLayout
 
         public static bool checkBoxExist(string box_barcode)
         {
-            SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
-                                       "Initial Catalog=ibdbase;");
+            SqlConnection myConnection = new SqlConnection(conn_string);
             myConnection.Open();
 
             SqlCommand myCommand = new SqlCommand("SELECT count(*) as box_count " +
@@ -181,9 +162,7 @@ namespace TecanEvo_PipetteLayout
 
         public static bool checkBoxIsEmpty(string box_barcode)
         {
-            SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
-                                       "Initial Catalog=ibdbase;");
+            SqlConnection myConnection = new SqlConnection(conn_string);
             myConnection.Open();
 
             SqlCommand myCommand = new SqlCommand("SELECT count(*) as sample_count " +
@@ -208,9 +187,7 @@ namespace TecanEvo_PipetteLayout
 
         public static void getBoxSamples(string source, string box_barcode, Dictionary<string, CSample> tubeBarcodes)
         {
-            SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
-                                       "Initial Catalog=ibdbase;");
+            SqlConnection myConnection = new SqlConnection(conn_string);
             myConnection.Open();
 
             SqlDataReader myReader = null;
@@ -238,21 +215,21 @@ namespace TecanEvo_PipetteLayout
 
         public static void loadLayout(string layout, Dictionary<string, CPlateWell> plateWells)
         {
-            SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
-                                       "Initial Catalog=ibdbase;");
+            SqlConnection myConnection = new SqlConnection(conn_string);
             myConnection.Open();
 
             SqlDataReader myReader = null;
-            SqlCommand myCommand = new SqlCommand("SELECT row, col, patient_id" +
-                                                " FROM master_plate_well" +
-                                                " WHERE master_plate_name_id = '" + layout + "'" +
+            SqlCommand myCommand = new SqlCommand("SELECT r.row_c as row, plp.col, plp.patient_id" +
+                                                " FROM plate_layout_patient plp" +
+                                                " JOIN plate_layout pl ON pl.plate_layout_id = plp.plate_layout_id" +
+                                                " JOIN plate_row_char2int r ON r.row_i = plp.row" +
+                                                " WHERE pl.name = '" + layout + "'" +
                                                 " AND patient_id NOT IN (" +
                                                 "   SELECT patient_id" +
                                                 "   FROM patient_iscontrol" + 
                                                 "   WHERE positive = 0" +
                                                 " )" +
-                                                " ORDER BY col, row"
+                                                " ORDER BY plp.col, r.row_c"
                                                 , myConnection);
 
             myReader = myCommand.ExecuteReader();
@@ -266,12 +243,9 @@ namespace TecanEvo_PipetteLayout
             myReader.Close();
         }
 
-        public static void addSamplesToPlate(string platform, string layout, Int32 number, Int32 volume, Int32 concentration, Dictionary<string, CPlateWell> plateWells)
+        public static void addSamplesToPlate(Int32 plate_id, Int32 volume, Int32 concentration, Dictionary<string, CPlateWell> plateWells)
         {
-            SqlConnection myConnection = new SqlConnection("User Id=tecan;" +
-                                       "Password=tecan;Data Source=ukshikmb-sw049;" +
-                                       "Initial Catalog=ibdbase;");
-
+            SqlConnection myConnection = new SqlConnection(conn_string);
             myConnection.Open();
 
             SqlTransaction trans;
@@ -280,21 +254,9 @@ namespace TecanEvo_PipetteLayout
 
             try 
             {
-                SqlCommand myCommand = new SqlCommand("SELECT plate_id" +
-                                                    " FROM plate" +
-                                                    " WHERE master_plate_name_id = '" + layout + "'" +
-                                                    " AND number = " + number +
-                                                    " AND plate_platform_id = (" +
-                                                    "   SELECT plate_platform_id" +
-                                                    "   FROM plate_platform" +
-                                                    "   WHERE plate_platform_name_id = '" + platform + "'" +
-                                                    " )"
-                                                    , myConnection);
+                SqlCommand myCommand = new SqlCommand(" INSERT INTO plate_prop_dec (property_id, plate_id, property_value, date_entered, created_by)" +
+                                                        " VALUES (1," + plate_id + "," + volume + ",getdate(),'tecan')", myConnection);
                 myCommand.Transaction = trans;
-                Int32 plate_id = int.Parse(myCommand.ExecuteScalar().ToString());
-
-                myCommand.CommandText = " INSERT INTO plate_prop_dec (property_id, plate_id, property_value, date_entered, created_by)" +
-                                        " VALUES (1," + plate_id + "," + volume + ",getdate(),'tecan')";
                 myCommand.ExecuteNonQuery();
                 if (concentration > 0)
                 {
@@ -319,12 +281,10 @@ namespace TecanEvo_PipetteLayout
                         Thread.Sleep(50);
                     }
                 }
-                using (SqlCommand cmd = new SqlCommand("spu_plate_track_location", myConnection))
+                using (SqlCommand cmd = new SqlCommand("spu_plate_track_location_by_plate_id", myConnection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("@plate_platform_name_id", SqlDbType.Char, 4).Value = platform;
-                    cmd.Parameters.Add("@master_plate_name_id", SqlDbType.VarChar, 10).Value = layout;
-                    cmd.Parameters.Add("@number", SqlDbType.Int).Value = number;
+                    cmd.Parameters.Add("@plate_id", SqlDbType.Int).Value = plate_id;
                     cmd.Parameters.Add("@event_id", SqlDbType.Int).Value = 24;
                     cmd.Parameters.Add("@done_by", SqlDbType.VarChar, 25).Value = "tecan";
                     cmd.Parameters.Add("@tracking_location_id", SqlDbType.Int).Direction = ParameterDirection.Output;
@@ -350,6 +310,48 @@ namespace TecanEvo_PipetteLayout
 
             trans.Dispose();
             myConnection.Close();
+        }
+
+        public static int getPlateID_by_barcode(string plate_barcode)
+        {
+            int plate_id = -1;
+            SqlConnection myConnection = new SqlConnection(conn_string);
+
+            myConnection.Open();
+
+            SqlTransaction trans;
+            // Start a local transaction.
+            trans = myConnection.BeginTransaction("SampleTransaction");
+
+            try
+            {
+                SqlCommand myCommand = new SqlCommand("SELECT plate_id" +
+                                                    " FROM plate" +
+                                                    " WHERE barcode = '" + plate_barcode + "'"
+                                                    , myConnection);
+                myCommand.Transaction = trans;
+                plate_id = int.Parse(myCommand.ExecuteScalar().ToString());
+
+                trans.Commit();
+                myCommand.Dispose();
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    trans.Rollback();
+                }
+                catch (Exception ex2)
+                {
+                    MessageBox.Show("Rollback Exception Type: " + ex2.GetType() + "\r\n" + ex2.Message);
+                }
+                MessageBox.Show("Error writing to IBDbase:\r\n" + e.Message);
+            }
+
+            trans.Dispose();
+            myConnection.Close();
+
+            return plate_id;
         }
     }
 }

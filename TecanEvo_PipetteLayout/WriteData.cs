@@ -21,6 +21,7 @@ namespace TecanEvo_PipetteLayout
         private Int32 m_targetConc = 0; // in ng/µl
         private Int32 m_targetVol = 0; // in µl
         private Int32 m_normalize = 0; // boolean: 0 or 1
+        private Int32 m_destination_plate_id = 0;
         private string m_destination_plate_barcode = "";
         private string m_destination_plate_platform = "";
         private string m_destination_plate_layout = "";
@@ -137,6 +138,7 @@ namespace TecanEvo_PipetteLayout
                                 m_destination_plate_platform = plate_tokenized[0];
                                 m_destination_plate_layout = plate_tokenized[1];
                                 m_destination_plate_number = int.Parse(plate_tokenized[2]);
+                                m_destination_plate_id = CSQL.getPlateID_by_barcode(m_destination_plate_barcode);
                             }
                             else if (tokenized[1] == "target_volume")
                             {
@@ -171,9 +173,7 @@ namespace TecanEvo_PipetteLayout
             try
             {
                 CSQL.addSamplesToPlate(
-                    m_destination_plate_platform,
-                    m_destination_plate_layout,
-                    m_destination_plate_number,
+                    m_destination_plate_id,
                     m_targetVol,
                     m_targetConc,
                     newWellDict
