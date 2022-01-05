@@ -32,6 +32,8 @@ namespace TecanEvo_PipetteLayout
         private Int32 m_targetConc = 0; // in ng/µl
         private Int32 m_targetVol = 0; // in µl
         private Int32 m_normalize = 0; // boolean: 0 or 1
+        private Int32 m_drop_sense_measurement = 0; // boolean: 0 or 1
+        private Int32 m_drop_sense_mix = 0; // boolean: 0 or 1
         private Int32 m_source_eppi = 0; // boolean: 0 or 1
         private Int32 m_source_micronic14 = 0; // boolean: 0 or 1
         private Int32 m_source_micronic07 = 0; // boolean: 0 or 1
@@ -69,12 +71,14 @@ namespace TecanEvo_PipetteLayout
                                      "3. Micronic 1.4ml Barcode file path,\r\n" +
                                      "4. Micronic 0.7ml Barcode file path,\r\n" +
                                      "5. JobInfo output file path,\r\n" +
-                                     "6. Worklist output file path,\r\n");
+                                     "6. Worklist output file path,\r\n" +
+                                     "7. DropSense template file path,\r\n");
                 }
                 loadVariables(m_args[1]);
                 loadSourceBarcodes();
                 loadDestinationLayout();
                 getTransferVolumes();
+                writeDropSenseTemplate(m_args[6]);
 
                 bool all_okay = showTransferOverview();
 
@@ -212,6 +216,19 @@ namespace TecanEvo_PipetteLayout
                                     lblTargetConcentration.Visible = false;
                                     lblTargetConcentrationText.Visible = false;
                                 }
+                            }
+                            else if (tokenized[1] == "drop_sense")
+                            {
+                                m_drop_sense_measurement = int.Parse(tokenized[2].Trim());
+                                if (m_drop_sense_measurement == 1)
+                                {
+                                    m_targetVol = m_targetVol + 3;
+                                    lblDropSenseMeasurement.Text = "Yes";
+                                }
+                            }
+                            else if (tokenized[1] == "drop_sense_mix")
+                            {
+                                m_drop_sense_mix = int.Parse(tokenized[2].Trim());
                             }
                         }
                     }
@@ -488,6 +505,7 @@ namespace TecanEvo_PipetteLayout
             string sourceLabwareType = "";
             string destinationLabwareName = "";
             string destinationLabwareType = "";
+            string liquidClassDNA = "DNA Transfer Job";
 
             if (m_sample_destination == "D PCR Plate")
             {
@@ -503,6 +521,11 @@ namespace TecanEvo_PipetteLayout
             {
                 destinationLabwareName = "D iScan Plate";
                 destinationLabwareType = "4titudePCR96wellSkirted";
+                if (m_normalize == 0)
+                {
+                    //liquidClassDNA = "DNA Transfer Job";
+                    liquidClassDNA = "IKMB Water free dispense";
+                }
             }
             else
             {
@@ -581,13 +604,13 @@ namespace TecanEvo_PipetteLayout
                         {
                             if (sourceLabwareName == "Eppi 2ml")
                             {
-                                streamWriter.WriteLine("A;" + sourceBarcodesDict[destinationWellDict[key].getSampleBarcode()].getEppieRack() + ";;" + sourceLabwareType + ";" + sourceBarcodesDict[destinationWellDict[key].getSampleBarcode()].getRackPos() + ";;" + volume.ToString("R", CultureInfo.InvariantCulture) + ";DNA Transfer Job;;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
+                                streamWriter.WriteLine("A;" + sourceBarcodesDict[destinationWellDict[key].getSampleBarcode()].getEppieRack() + ";;" + sourceLabwareType + ";" + sourceBarcodesDict[destinationWellDict[key].getSampleBarcode()].getRackPos() + ";;" + volume.ToString("R", CultureInfo.InvariantCulture) + ";" + liquidClassDNA + ";;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
                             }
                             else
                             {
-                                streamWriter.WriteLine("A;" + sourceLabwareName + ";;" + sourceLabwareType + ";" + sourceBarcodesDict[destinationWellDict[key].getSampleBarcode()].getRackPos() + ";;" + volume.ToString("R", CultureInfo.InvariantCulture) + ";DNA Transfer Job;;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
+                                streamWriter.WriteLine("A;" + sourceLabwareName + ";;" + sourceLabwareType + ";" + sourceBarcodesDict[destinationWellDict[key].getSampleBarcode()].getRackPos() + ";;" + volume.ToString("R", CultureInfo.InvariantCulture) + ";" + liquidClassDNA + ";;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
                             }
-                            streamWriter.WriteLine("D;" + destinationLabwareName + ";;" + destinationLabwareType + ";" + RackPosTo96wellNumber(key) + ";;" + volume.ToString("R", CultureInfo.InvariantCulture) + ";DNA Transfer Job;;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
+                            streamWriter.WriteLine("D;" + destinationLabwareName + ";;" + destinationLabwareType + ";" + RackPosTo96wellNumber(key) + ";;" + volume.ToString("R", CultureInfo.InvariantCulture) + ";" + liquidClassDNA + ";;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
                         }
                         else
                         {
@@ -598,13 +621,13 @@ namespace TecanEvo_PipetteLayout
                             {
                                 if (sourceLabwareName == "Eppi 2ml")
                                 {
-                                    streamWriter.WriteLine("A;" + sourceBarcodesDict[destinationWellDict[key].getSampleBarcode()].getEppieRack() + ";;" + sourceLabwareType + ";" + sourceBarcodesDict[destinationWellDict[key].getSampleBarcode()].getRackPos() + ";;" + volume.ToString("R", CultureInfo.InvariantCulture) + ";DNA Transfer Job;;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
+                                    streamWriter.WriteLine("A;" + sourceBarcodesDict[destinationWellDict[key].getSampleBarcode()].getEppieRack() + ";;" + sourceLabwareType + ";" + sourceBarcodesDict[destinationWellDict[key].getSampleBarcode()].getRackPos() + ";;" + volume.ToString("R", CultureInfo.InvariantCulture) + ";" + liquidClassDNA + ";;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
                                 }
                                 else
                                 {
-                                    streamWriter.WriteLine("A;" + sourceLabwareName + ";;" + sourceLabwareType + ";" + sourceBarcodesDict[destinationWellDict[key].getSampleBarcode()].getRackPos() + ";;" + volume.ToString("R", CultureInfo.InvariantCulture) + ";DNA Transfer Job;;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
+                                    streamWriter.WriteLine("A;" + sourceLabwareName + ";;" + sourceLabwareType + ";" + sourceBarcodesDict[destinationWellDict[key].getSampleBarcode()].getRackPos() + ";;" + volume.ToString("R", CultureInfo.InvariantCulture) + ";" + liquidClassDNA + ";;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
                                 }
-                                streamWriter.WriteLine("D;" + destinationLabwareName + ";;" + destinationLabwareType + ";" + RackPosTo96wellNumber(key) + ";;" + volume.ToString("R", CultureInfo.InvariantCulture) + ";DNA Transfer Job;;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
+                                streamWriter.WriteLine("D;" + destinationLabwareName + ";;" + destinationLabwareType + ";" + RackPosTo96wellNumber(key) + ";;" + volume.ToString("R", CultureInfo.InvariantCulture) + ";" + liquidClassDNA + ";;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
                                 readwriteVolume -= actPipetVolume;
                                 if (readwriteVolume > maxAspirate)
                                     actPipetVolume = maxAspirate;
@@ -612,7 +635,7 @@ namespace TecanEvo_PipetteLayout
                                     actPipetVolume = readwriteVolume;
                             }
                         }
-                        if (m_normalize == 1)
+                        if (m_drop_sense_measurement == 1)
                         {
                             streamWriter.WriteLine("A;" + destinationLabwareName + ";;" + destinationLabwareType + ";" + RackPosTo96wellNumber(key) + ";;" + (3.0).ToString("R", CultureInfo.InvariantCulture) + ";DropSense;;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
                             streamWriter.WriteLine("D;NSense1;;;" + RackPosTo96wellNumber(key) + ";;" + (2.5).ToString("R", CultureInfo.InvariantCulture) + ";DropSense;;" + Convert.ToInt16(Math.Pow(2, tip)) + ";;;");
@@ -640,6 +663,27 @@ namespace TecanEvo_PipetteLayout
                 throw new Exception("Error writing variables file: \"" + file + "\"\r\n" + e.Message);
             }
         }
+
+        private void writeDropSenseTemplate(string file)
+        {
+            try
+            {
+                var fileStream = new FileStream(@file, FileMode.Create, FileAccess.ReadWrite);
+                using (var streamWriter = new StreamWriter(fileStream))
+                {
+                    for (int i = 1; i <= 96; i++)
+                    {
+                        streamWriter.WriteLine("TransferJobNDropPlate1," + numberTo96wellRackPosLunatic(i) + "," + numberTo96wellRackPos(i));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error writing variables file: \"" + file + "\"\r\n" + e.Message);
+                throw new Exception("Error writing variables file: \"" + file + "\"\r\n" + e.Message);
+            }
+        }
+
 
         public int RackPosTo96wellNumber(string well)
         {
@@ -742,6 +786,214 @@ namespace TecanEvo_PipetteLayout
                 case "G12": return 95;
                 case "H12": return 96;
                 default: return -1;
+            }
+        }
+
+        public static string numberTo96wellRackPos(int idx)
+        {
+            switch (idx)
+            {
+                case 1: return "A01";
+                case 2: return "B01";
+                case 3: return "C01";
+                case 4: return "D01";
+                case 5: return "E01";
+                case 6: return "F01";
+                case 7: return "G01";
+                case 8: return "H01";
+                case 9: return "A02";
+                case 10: return "B02";
+                case 11: return "C02";
+                case 12: return "D02";
+                case 13: return "E02";
+                case 14: return "F02";
+                case 15: return "G02";
+                case 16: return "H02";
+                case 17: return "A03";
+                case 18: return "B03";
+                case 19: return "C03";
+                case 20: return "D03";
+                case 21: return "E03";
+                case 22: return "F03";
+                case 23: return "G03";
+                case 24: return "H03";
+                case 25: return "A04";
+                case 26: return "B04";
+                case 27: return "C04";
+                case 28: return "D04";
+                case 29: return "E04";
+                case 30: return "F04";
+                case 31: return "G04";
+                case 32: return "H04";
+                case 33: return "A05";
+                case 34: return "B05";
+                case 35: return "C05";
+                case 36: return "D05";
+                case 37: return "E05";
+                case 38: return "F05";
+                case 39: return "G05";
+                case 40: return "H05";
+                case 41: return "A06";
+                case 42: return "B06";
+                case 43: return "C06";
+                case 44: return "D06";
+                case 45: return "E06";
+                case 46: return "F06";
+                case 47: return "G06";
+                case 48: return "H06";
+                case 49: return "A07";
+                case 50: return "B07";
+                case 51: return "C07";
+                case 52: return "D07";
+                case 53: return "E07";
+                case 54: return "F07";
+                case 55: return "G07";
+                case 56: return "H07";
+                case 57: return "A08";
+                case 58: return "B08";
+                case 59: return "C08";
+                case 60: return "D08";
+                case 61: return "E08";
+                case 62: return "F08";
+                case 63: return "G08";
+                case 64: return "H08";
+                case 65: return "A09";
+                case 66: return "B09";
+                case 67: return "C09";
+                case 68: return "D09";
+                case 69: return "E09";
+                case 70: return "F09";
+                case 71: return "G09";
+                case 72: return "H09";
+                case 73: return "A10";
+                case 74: return "B10";
+                case 75: return "C10";
+                case 76: return "D10";
+                case 77: return "E10";
+                case 78: return "F10";
+                case 79: return "G10";
+                case 80: return "H10";
+                case 81: return "A11";
+                case 82: return "B11";
+                case 83: return "C11";
+                case 84: return "D11";
+                case 85: return "E11";
+                case 86: return "F11";
+                case 87: return "G11";
+                case 88: return "H11";
+                case 89: return "A12";
+                case 90: return "B12";
+                case 91: return "C12";
+                case 92: return "D12";
+                case 93: return "E12";
+                case 94: return "F12";
+                case 95: return "G12";
+                case 96: return "H12";
+                default: return "";
+            }
+        }
+
+        public static string numberTo96wellRackPosLunatic(int idx)
+        {
+            switch (idx)
+            {
+                case 1: return "A1";
+                case 2: return "B1";
+                case 3: return "C1";
+                case 4: return "D1";
+                case 5: return "E1";
+                case 6: return "F1";
+                case 7: return "G1";
+                case 8: return "H1";
+                case 9: return "A2";
+                case 10: return "B2";
+                case 11: return "C2";
+                case 12: return "D2";
+                case 13: return "E2";
+                case 14: return "F2";
+                case 15: return "G2";
+                case 16: return "H2";
+                case 17: return "A3";
+                case 18: return "B3";
+                case 19: return "C3";
+                case 20: return "D3";
+                case 21: return "E3";
+                case 22: return "F3";
+                case 23: return "G3";
+                case 24: return "H3";
+                case 25: return "A4";
+                case 26: return "B4";
+                case 27: return "C4";
+                case 28: return "D4";
+                case 29: return "E4";
+                case 30: return "F4";
+                case 31: return "G4";
+                case 32: return "H4";
+                case 33: return "A5";
+                case 34: return "B5";
+                case 35: return "C5";
+                case 36: return "D5";
+                case 37: return "E5";
+                case 38: return "F5";
+                case 39: return "G5";
+                case 40: return "H5";
+                case 41: return "A6";
+                case 42: return "B6";
+                case 43: return "C6";
+                case 44: return "D6";
+                case 45: return "E6";
+                case 46: return "F6";
+                case 47: return "G6";
+                case 48: return "H6";
+                case 49: return "A7";
+                case 50: return "B7";
+                case 51: return "C7";
+                case 52: return "D7";
+                case 53: return "E7";
+                case 54: return "F7";
+                case 55: return "G7";
+                case 56: return "H7";
+                case 57: return "A8";
+                case 58: return "B8";
+                case 59: return "C8";
+                case 60: return "D8";
+                case 61: return "E8";
+                case 62: return "F8";
+                case 63: return "G8";
+                case 64: return "H8";
+                case 65: return "A9";
+                case 66: return "B9";
+                case 67: return "C9";
+                case 68: return "D9";
+                case 69: return "E9";
+                case 70: return "F9";
+                case 71: return "G9";
+                case 72: return "H9";
+                case 73: return "A10";
+                case 74: return "B10";
+                case 75: return "C10";
+                case 76: return "D10";
+                case 77: return "E10";
+                case 78: return "F10";
+                case 79: return "G10";
+                case 80: return "H10";
+                case 81: return "A11";
+                case 82: return "B11";
+                case 83: return "C11";
+                case 84: return "D11";
+                case 85: return "E11";
+                case 86: return "F11";
+                case 87: return "G11";
+                case 88: return "H11";
+                case 89: return "A12";
+                case 90: return "B12";
+                case 91: return "C12";
+                case 92: return "D12";
+                case 93: return "E12";
+                case 94: return "F12";
+                case 95: return "G12";
+                case 96: return "H12";
+                default: return "";
             }
         }
 

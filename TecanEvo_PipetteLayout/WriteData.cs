@@ -26,6 +26,7 @@ namespace TecanEvo_PipetteLayout
         private string m_destination_plate_platform = "";
         private string m_destination_plate_layout = "";
         private Int32 m_destination_plate_number = 0;
+        private Int32 m_drop_sense_measurement = 0; // boolean: 0 or 1
 
         private Dictionary<string, CPlateWell> newWellDict = new Dictionary<string, CPlateWell>();
 
@@ -66,7 +67,7 @@ namespace TecanEvo_PipetteLayout
             File.Copy(m_args[1], prefix + "variables.txt", true);
             File.Copy(m_args[2], prefix + "jobInfo.txt", true);
             File.Copy(m_args[3], prefix + "worklist.txt", true);
-            if (m_normalize == 1)
+            if (m_drop_sense_measurement == 1)
             {
                 File.Copy(m_args[4], prefix + "dropSense.txt",true);
             }
@@ -77,7 +78,7 @@ namespace TecanEvo_PipetteLayout
             File.Delete(m_args[1]);
             File.Delete(m_args[2]);
             File.Delete(m_args[3]);
-            if (m_normalize == 1)
+            if (m_drop_sense_measurement == 1)
             {
                 File.Delete(m_args[4]);
             }
@@ -155,6 +156,11 @@ namespace TecanEvo_PipetteLayout
                                 {
                                     m_targetConc = 0;
                                 }
+                            }
+                            else if (tokenized[1] == "drop_sense")
+                            {
+                                m_drop_sense_measurement = int.Parse(tokenized[2].Trim());
+                                m_targetVol = m_targetVol - 3;
                             }
                         }
                     }

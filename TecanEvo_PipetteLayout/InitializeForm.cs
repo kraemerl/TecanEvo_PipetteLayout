@@ -29,6 +29,8 @@ namespace TecanEvo_PipetteLayout
         private Int32 m_targetConc = 0; // in ng/µl
         private Int32 m_targetVol = 0; // in µl
         private Int32 m_normalize = 0; // boolean: 0 or 1
+        private Int32 m_drop_sense_measurement = 1; // boolean: 0 or 1
+        private Int32 m_drop_sense_mix = 1; // boolean: 0 or 1
         private Int32 m_source_eppi = 0; // boolean: 0 or 1
         private Int32 m_source_micronic14 = 0; // boolean: 0 or 1
         private Int32 m_source_micronic07 = 0; // boolean: 0 or 1
@@ -51,12 +53,16 @@ namespace TecanEvo_PipetteLayout
             {
                 lblConcentration.Visible = true;
                 txtConcentration.Visible = true;
+                chkDropSense.Enabled = true;
+                chkMix.Enabled = true;
                 m_normalize = 1;
             }
             else
             {
                 lblConcentration.Visible = false;
                 txtConcentration.Visible = false;
+                chkDropSense.Enabled = false;
+                chkMix.Enabled = false;
                 m_normalize = 0;
             }
         }
@@ -95,6 +101,11 @@ namespace TecanEvo_PipetteLayout
                     if (txtSourcePlate3BoxBarcode.Text.Trim() != "")
                     {
                         streamWriter.Write("S,sample_source_box_barcode3," + txtSourcePlate3BoxBarcode.Text.Trim() + "\r\n");
+                    }
+                    if (m_normalize == 1)
+                    {
+                        streamWriter.Write("I,drop_sense," + m_drop_sense_measurement + "\r\n");
+                        streamWriter.Write("I,drop_sense_mix," + m_drop_sense_mix + "\r\n");
                     }
                 }
             }
@@ -195,7 +206,7 @@ namespace TecanEvo_PipetteLayout
             if (CSQL.checkPlateExist(txtPlateBarcode.Text.Trim()) == false)
             {
                 MessageBox.Show("Unknown or unusable plate.");
-                txtVolume.Focus();
+                txtPlateBarcode.Focus();
                 return;
             }
 
@@ -370,6 +381,31 @@ namespace TecanEvo_PipetteLayout
                 m_source_pcr_plate3 = 0;
                 txtSourcePlate3BoxBarcode.Visible = false;
                 txtSourcePlate3BoxBarcode.Text = "";
+            }
+        }
+
+        private void chkDropSense_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkDropSense.Checked)
+            {
+                m_drop_sense_measurement = 1;
+            }
+            else
+            {
+                m_drop_sense_measurement = 0;
+            }
+            chkMix.Checked = chkDropSense.Checked;
+        }
+
+        private void chkMix_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkMix.Checked)
+            {
+                m_drop_sense_mix = 1;
+            }
+            else
+            {
+                m_drop_sense_mix = 0;
             }
         }
     }

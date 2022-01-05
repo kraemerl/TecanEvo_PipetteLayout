@@ -11,7 +11,7 @@ namespace TecanEvo_PipetteLayout
 {
     class CSQL
     {
-        private static string conn_string = "User Id=tecan;Password=tecan;Data Source=ukshikmb-sw049;Initial Catalog=ibdbase;";
+        private static string conn_string = "User Id=tecan;Password=tecan;Data Source=ibdbase.i-kmb.de;Initial Catalog=ibdbase;";
 
         public static void setPatients(Dictionary<string, CSample> tubeBarcodes)
         {

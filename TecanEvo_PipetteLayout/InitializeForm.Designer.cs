@@ -52,6 +52,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.rbDestinationPCRPlate = new System.Windows.Forms.RadioButton();
             this.label2 = new System.Windows.Forms.Label();
+            this.chkDropSense = new System.Windows.Forms.CheckBox();
+            this.chkMix = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -197,7 +199,7 @@
             // chkNormalize
             // 
             this.chkNormalize.AutoSize = true;
-            this.chkNormalize.Location = new System.Drawing.Point(18, 245);
+            this.chkNormalize.Location = new System.Drawing.Point(18, 256);
             this.chkNormalize.Name = "chkNormalize";
             this.chkNormalize.Size = new System.Drawing.Size(73, 17);
             this.chkNormalize.TabIndex = 9;
@@ -207,7 +209,7 @@
             // 
             // txtConcentration
             // 
-            this.txtConcentration.Location = new System.Drawing.Point(167, 262);
+            this.txtConcentration.Location = new System.Drawing.Point(191, 273);
             this.txtConcentration.MaxLength = 5;
             this.txtConcentration.Name = "txtConcentration";
             this.txtConcentration.Size = new System.Drawing.Size(54, 20);
@@ -220,7 +222,7 @@
             // lblConcentration
             // 
             this.lblConcentration.AutoSize = true;
-            this.lblConcentration.Location = new System.Drawing.Point(15, 265);
+            this.lblConcentration.Location = new System.Drawing.Point(39, 276);
             this.lblConcentration.Name = "lblConcentration";
             this.lblConcentration.Size = new System.Drawing.Size(144, 13);
             this.lblConcentration.TabIndex = 17;
@@ -230,7 +232,7 @@
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.Location = new System.Drawing.Point(208, 301);
+            this.butCancel.Location = new System.Drawing.Point(208, 351);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(75, 23);
             this.butCancel.TabIndex = 12;
@@ -241,7 +243,7 @@
             // butOkay
             // 
             this.butOkay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOkay.Location = new System.Drawing.Point(124, 301);
+            this.butOkay.Location = new System.Drawing.Point(124, 351);
             this.butOkay.Name = "butOkay";
             this.butOkay.Size = new System.Drawing.Size(75, 23);
             this.butOkay.TabIndex = 11;
@@ -331,11 +333,41 @@
             this.label2.TabIndex = 14;
             this.label2.Text = "Target Volume (µl):";
             // 
+            // chkDropSense
+            // 
+            this.chkDropSense.AutoSize = true;
+            this.chkDropSense.Checked = true;
+            this.chkDropSense.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkDropSense.Enabled = false;
+            this.chkDropSense.Location = new System.Drawing.Point(42, 299);
+            this.chkDropSense.Name = "chkDropSense";
+            this.chkDropSense.Size = new System.Drawing.Size(145, 17);
+            this.chkDropSense.TabIndex = 47;
+            this.chkDropSense.Text = "DropSense measurement";
+            this.chkDropSense.UseVisualStyleBackColor = true;
+            this.chkDropSense.CheckedChanged += new System.EventHandler(this.chkDropSense_CheckedChanged);
+            // 
+            // chkMix
+            // 
+            this.chkMix.AutoSize = true;
+            this.chkMix.Checked = true;
+            this.chkMix.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkMix.Enabled = false;
+            this.chkMix.Location = new System.Drawing.Point(42, 322);
+            this.chkMix.Name = "chkMix";
+            this.chkMix.Size = new System.Drawing.Size(204, 17);
+            this.chkMix.TabIndex = 53;
+            this.chkMix.Text = "Mix liquid before DropSense pipetting ";
+            this.chkMix.UseVisualStyleBackColor = true;
+            this.chkMix.CheckedChanged += new System.EventHandler(this.chkMix_CheckedChanged);
+            // 
             // InitializeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(295, 336);
+            this.ClientSize = new System.Drawing.Size(295, 385);
+            this.Controls.Add(this.chkMix);
+            this.Controls.Add(this.chkDropSense);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOkay);
@@ -347,8 +379,8 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.groupBox1);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(311, 374);
-            this.MinimumSize = new System.Drawing.Size(311, 374);
+            this.MaximumSize = new System.Drawing.Size(311, 424);
+            this.MinimumSize = new System.Drawing.Size(311, 424);
             this.Name = "InitializeForm";
             this.Text = "EVO: Pipette Layout";
             this.groupBox1.ResumeLayout(false);
@@ -386,6 +418,8 @@
         private System.Windows.Forms.TextBox txtSourcePlate2BoxBarcode;
         private System.Windows.Forms.CheckBox chkSourcePlate2;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox chkDropSense;
+        private System.Windows.Forms.CheckBox chkMix;
     }
 }
 
